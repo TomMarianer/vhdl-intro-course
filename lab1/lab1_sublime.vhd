@@ -1,9 +1,9 @@
 entity THERMOSTAT is
 	port (
-		CURRENT_TEMP	: in  bit_vector (7 downto 0);
-		DESIRED_TEMP	: in  bit_vector (7 downto 0);
+		CURRENT_TEMP	: in  bit_vector (6 downto 0);
+		DESIRED_TEMP	: in  bit_vector (6 downto 0);
 		DISPLAY_SELECT	: in  bit;
-		TEMP_DISPLAY	: out bit_vector (7 downto 0)
+		TEMP_DISPLAY	: out bit_vector (6 downto 0)
 	);
 	
 end entity THERMOSTAT;
