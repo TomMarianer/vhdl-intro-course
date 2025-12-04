@@ -11,7 +11,7 @@ component THERMOSTAT is
 	);
 end component THERMOSTAT;
 
-signal T_CURRENT_TEMP, T_DESIRED_TEMP, T_TEMP_DISPLAY	: bit_vector (7 downto 0);
+signal T_CURRENT_TEMP, T_DESIRED_TEMP, T_TEMP_DISPLAY	: bit_vector (6 downto 0);
 signal T_DISPLAY_SELECT									: bit;
 
 begin
