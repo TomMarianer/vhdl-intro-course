@@ -62,7 +62,7 @@ begin
             DISPLAY_SELECT_REG  <= '0';
             COOL_REG            <= '0';
             HEAT_REG            <= '0';
-        elsif rising_edge(CLK) then
+        elsif CLK'event and CLK = '1' then
             CURRENT_TEMP_REG    <= CURRENT_TEMP;
             DESIRED_TEMP_REG    <= DESIRED_TEMP;
             DISPLAY_SELECT_REG  <= DISPLAY_SELECT;
@@ -77,7 +77,7 @@ begin
             TEMP_DISPLAY    <= (others => '0');
             AC_ON           <= '0';
             FURNACE_ON      <= '0';
-        elsif rising_edge(CLK) then
+        elsif CLK'event and CLK = '1' then
             TEMP_DISPLAY    <= TEMP_DISPLAY_INT;
             AC_ON           <= AC_ON_INT;
             FURNACE_ON      <= FURNACE_ON_INT;
