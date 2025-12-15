@@ -71,4 +71,17 @@ begin
         end if;
     end process;
 
+    REGISTER_OUTPUTS: process(CLK, RESET)
+    begin
+        if RESET = '1' then
+            TEMP_DISPLAY    <= (others => '0');
+            AC_ON           <= '0';
+            FURNACE_ON      <= '0';
+        elsif rising_edge(CLK) then
+            TEMP_DISPLAY    <= TEMP_DISPLAY_INT;
+            AC_ON           <= AC_ON_INT;
+            FURNACE_ON      <= FURNACE_ON_INT;
+        end if;
+    end process;
+
 end architecture THERMOSTAT_ARCH;
