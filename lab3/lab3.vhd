@@ -54,5 +54,21 @@ begin
 
     end process;
 
-    
+    REGISTER_INPUTS: process(CLK, RESET)
+    begin
+        if RESET = '1' then
+            CURRENT_TEMP_REG    <= (others => '0');
+            DESIRED_TEMP_REG    <= (others => '0');
+            DISPLAY_SELECT_REG  <= '0';
+            COOL_REG            <= '0';
+            HEAT_REG            <= '0';
+        elsif rising_edge(CLK) then
+            CURRENT_TEMP_REG    <= CURRENT_TEMP;
+            DESIRED_TEMP_REG    <= DESIRED_TEMP;
+            DISPLAY_SELECT_REG  <= DISPLAY_SELECT;
+            COOL_REG            <= COOL;
+            HEAT_REG            <= HEAT;
+        end if;
+    end process;
+
 end architecture THERMOSTAT_ARCH;
