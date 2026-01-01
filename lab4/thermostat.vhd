@@ -97,4 +97,56 @@ begin
         end if;
     end process;
 
+    STATE_FLIP_FLOP: process(CLK, RESET)
+    begin
+        if RESET = '1' then
+            CURRENT_STATE <= IDLE;
+        elsif CLK'event and CLK = '1' then
+            CURRENT_STATE <= NEXT_STATE;
+        end if;
+    end process;
+
+    STATE_MACHINE_TRANSITIONS: process (CURRENT_STATE, CURRENT_TEMP_REG, DESIRED_TEMP_REG, COOL_REG, AC_READY_REG, HEAT_REG, FURNACE_HOT_REG)
+    begin
+        NEXT_STATE <= CURRENT_STATE;
+        case CURRENT_STATE is
+            when IDLE =>
+                if (COOL_REG = '1') and (DESIRED_TEMP_REG < CURRENT_TEMP_REG) then
+                    NEXT_STATE <= COOL_ON;
+                elsif (HEAT_REG = '1') and (DESIRED_TEMP_REG > CURRENT_TEMP_REG) then
+                    NEXT_STATE <= HEAT_ON;
+                end if;
+
+            when COOL_ON =>
+                if (AC_READY_REG = '1') then
+                    NEXT_STATE <= AC_NOW_READY;
+                end if;
+
+            when AC_NOW_READY =>
+                if (COOL_REG = '0') or (DESIRED_TEMP_REG > CURRENT_TEMP_REG) then
+                    NEXT_STATE <= AC_DONE;
+                end if;
+
+            when AC_DONE =>
+                if (AC_READY_REG = '0') then
+                    NEXT_STATE <= IDLE;
+                end if;
+
+            when HEAT_ON =>
+                if (FURNACE_HOT_REG = '1') then
+                    NEXT_STATE <= FURNACE_NOW_READY;
+                end if;
+
+            when FURNACE_NOW_READY =>
+                if (HEAT_REG = '0') or (DESIRED_TEMP_REG < CURRENT_TEMP_REG) then
+                    NEXT_STATE <= FURNACE_DONE;
+                end if;
+
+            when FURNACE_DONE =>
+                if (FURNACE_HOT_REG ='0') then
+                    NEXT_STATE <= IDLE;
+                end if;
+        end case;
+    end process;
+
 end architecture THERMOSTAT_ARCH;
