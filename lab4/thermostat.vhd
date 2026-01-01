@@ -22,6 +22,8 @@ end entity THERMOSTAT;
 
 architecture THERMOSTAT_ARCH of THERMOSTAT is
 
+type THERMOSTAT_STATE_T is (IDLE, COOL_ON, AC_NOW_READY, AC_DONE, HEAT_ON, FURNACE_NOW_READY, FURNACE_DONE);
+
 signal CURRENT_TEMP_REG     : std_logic_vector (6 downto 0);
 signal DESIRED_TEMP_REG     : std_logic_vector (6 downto 0);
 signal DISPLAY_SELECT_REG   : std_logic;
@@ -33,6 +35,8 @@ signal TEMP_DISPLAY_INT     : std_logic_vector (6 downto 0);
 signal AC_ON_INT            : std_logic;
 signal FURNACE_ON_INT       : std_logic;
 signal FAN_ON_INT           : std_logic;
+signal CURRENT_STATE        : THERMOSTAT_STATE_T;
+signal NEXT_STATE           : THERMOSTAT_STATE_T;
 
 begin
     DISPLAY: process (CURRENT_TEMP_REG, DESIRED_TEMP_REG, DISPLAY_SELECT_REG)
