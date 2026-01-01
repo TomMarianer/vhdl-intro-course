@@ -49,25 +49,7 @@ begin
 
     end process;
 
-    AC: process (COOL_REG, CURRENT_TEMP_REG, DESIRED_TEMP_REG)
-    begin
-        AC_ON_INT <= '0';
-        if (COOL_REG = '1') and (DESIRED_TEMP_REG < CURRENT_TEMP_REG) then
-            AC_ON_INT <= '1';
-        end if;
-
-    end process;
-
-    FURNACE: process (HEAT_REG, CURRENT_TEMP_REG, DESIRED_TEMP_REG)
-    begin
-        FURNACE_ON_INT <= '0';
-        if (HEAT_REG = '1') and (DESIRED_TEMP_REG > CURRENT_TEMP_REG) then
-            FURNACE_ON_INT <= '1';
-        end if;
-
-    end process;
-
-    REGISTER_INPUTS: process(CLK, RESET)
+    REGISTER_INPUTS: process (CLK, RESET)
     begin
         if RESET = '1' then
             CURRENT_TEMP_REG    <= (others => '0');
@@ -82,6 +64,7 @@ begin
             COOL_REG            <= COOL;
             HEAT_REG            <= HEAT;
         end if;
+
     end process;
 
     REGISTER_OUTPUTS: process(CLK, RESET)
@@ -95,6 +78,7 @@ begin
             AC_ON           <= AC_ON_INT;
             FURNACE_ON      <= FURNACE_ON_INT;
         end if;
+
     end process;
 
     STATE_FLIP_FLOP: process(CLK, RESET)
@@ -104,6 +88,7 @@ begin
         elsif CLK'event and CLK = '1' then
             CURRENT_STATE <= NEXT_STATE;
         end if;
+
     end process;
 
     STATE_MACHINE_TRANSITIONS: process (CURRENT_STATE, CURRENT_TEMP_REG, DESIRED_TEMP_REG, COOL_REG, AC_READY_REG, HEAT_REG, FURNACE_HOT_REG)
@@ -146,7 +131,11 @@ begin
                 if (FURNACE_HOT_REG ='0') then
                     NEXT_STATE <= IDLE;
                 end if;
+
         end case;
+        
     end process;
+
+    STATE_MACHINE_OUTPUTS: process
 
 end architecture THERMOSTAT_ARCH;
