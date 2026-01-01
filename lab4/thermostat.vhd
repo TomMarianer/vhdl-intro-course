@@ -1,0 +1,93 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity THERMOSTAT is
+    port (
+        CLK             : in  std_logic;
+        RESET           : in  std_logic;
+        CURRENT_TEMP    : in  std_logic_vector (6 downto 0);
+        DESIRED_TEMP    : in  std_logic_vector (6 downto 0);
+        DISPLAY_SELECT  : in  std_logic;
+        COOL            : in  std_logic;
+        HEAT            : in  std_logic;
+        AC_READY        : in  std_logic;
+        FURNACE_HOT     : in  std_logic;
+        TEMP_DISPLAY    : out std_logic_vector (6 downto 0);
+        AC_ON           : out std_logic;
+        FURNACE_ON      : out std_logic;
+        FAN_ON          : out std_logic
+    );
+    
+end entity THERMOSTAT;
+
+architecture THERMOSTAT_ARCH of THERMOSTAT is
+
+signal CURRENT_TEMP_REG     : std_logic_vector (6 downto 0);
+signal DESIRED_TEMP_REG     : std_logic_vector (6 downto 0);
+signal DISPLAY_SELECT_REG   : std_logic;
+signal COOL_REG             : std_logic;
+signal HEAT_REG             : std_logic;
+signal TEMP_DISPLAY_INT     : std_logic_vector (6 downto 0);
+signal AC_ON_INT            : std_logic;
+signal FURNACE_ON_INT       : std_logic;
+
+begin
+    DISPLAY: process (CURRENT_TEMP_REG, DESIRED_TEMP_REG, DISPLAY_SELECT_REG)
+    begin
+        if DISPLAY_SELECT_REG = '1' then
+            TEMP_DISPLAY_INT <= CURRENT_TEMP_REG;
+        else
+            TEMP_DISPLAY_INT <= DESIRED_TEMP_REG;
+        end if;
+
+    end process;
+
+    AC: process (COOL_REG, CURRENT_TEMP_REG, DESIRED_TEMP_REG)
+    begin
+        AC_ON_INT <= '0';
+        if (COOL_REG = '1') and (DESIRED_TEMP_REG < CURRENT_TEMP_REG) then
+            AC_ON_INT <= '1';
+        end if;
+
+    end process;
+
+    FURNACE: process (HEAT_REG, CURRENT_TEMP_REG, DESIRED_TEMP_REG)
+    begin
+        FURNACE_ON_INT <= '0';
+        if (HEAT_REG = '1') and (DESIRED_TEMP_REG > CURRENT_TEMP_REG) then
+            FURNACE_ON_INT <= '1';
+        end if;
+
+    end process;
+
+    REGISTER_INPUTS: process(CLK, RESET)
+    begin
+        if RESET = '1' then
+            CURRENT_TEMP_REG    <= (others => '0');
+            DESIRED_TEMP_REG    <= (others => '0');
+            DISPLAY_SELECT_REG  <= '0';
+            COOL_REG            <= '0';
+            HEAT_REG            <= '0';
+        elsif CLK'event and CLK = '1' then
+            CURRENT_TEMP_REG    <= CURRENT_TEMP;
+            DESIRED_TEMP_REG    <= DESIRED_TEMP;
+            DISPLAY_SELECT_REG  <= DISPLAY_SELECT;
+            COOL_REG            <= COOL;
+            HEAT_REG            <= HEAT;
+        end if;
+    end process;
+
+    REGISTER_OUTPUTS: process(CLK, RESET)
+    begin
+        if RESET = '1' then
+            TEMP_DISPLAY    <= (others => '0');
+            AC_ON           <= '0';
+            FURNACE_ON      <= '0';
+        elsif CLK'event and CLK = '1' then
+            TEMP_DISPLAY    <= TEMP_DISPLAY_INT;
+            AC_ON           <= AC_ON_INT;
+            FURNACE_ON      <= FURNACE_ON_INT;
+        end if;
+    end process;
+
+end architecture THERMOSTAT_ARCH;
