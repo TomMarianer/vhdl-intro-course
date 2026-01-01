@@ -133,9 +133,48 @@ begin
                 end if;
 
         end case;
-        
+
     end process;
 
-    STATE_MACHINE_OUTPUTS: process
+    STATE_MACHINE_OUTPUTS: process (CURRENT_STATE)
+    begin
+        case CURRENT_STATE is
+            when IDLE =>
+                FURNACE_ON_INT <= '0';
+                AC_ON_INT <= '0';
+                FAN_ON <= '0';
+
+            when COOL_ON =>
+                FURNACE_ON_INT <= '0';
+                AC_ON_INT <= '1';
+                FAN_ON <= '0';
+
+            when AC_NOW_READY =>
+                FURNACE_ON_INT <= '0';
+                AC_ON_INT <= '1';
+                FAN_ON <= '1';
+
+            when AC_DONE =>
+                FURNACE_ON_INT <= '0';
+                AC_ON_INT <= '0';
+                FAN_ON <= '1';
+                
+            when HEAT_ON =>
+                FURNACE_ON_INT <= '1';
+                AC_ON_INT <= '0';
+                FAN_ON <= '0';
+
+            when FURNACE_NOW_READY =>
+                FURNACE_ON_INT <= '1';
+                AC_ON_INT <= '0';
+                FAN_ON <= '1';
+
+            when FURNACE_DONE =>
+                FURNACE_ON_INT <= '0';
+                AC_ON_INT <= '0';
+                FAN_ON <= '1';
+        end case;
+        
+    end process;
 
 end architecture THERMOSTAT_ARCH;
