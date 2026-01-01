@@ -9,8 +9,8 @@ entity THERMOSTAT is
         DESIRED_TEMP    : in  std_logic_vector (6 downto 0);
         DISPLAY_SELECT  : in  std_logic;
         COOL            : in  std_logic;
-        HEAT            : in  std_logic;
         AC_READY        : in  std_logic;
+        HEAT            : in  std_logic;
         FURNACE_HOT     : in  std_logic;
         TEMP_DISPLAY    : out std_logic_vector (6 downto 0);
         AC_ON           : out std_logic;
@@ -26,10 +26,13 @@ signal CURRENT_TEMP_REG     : std_logic_vector (6 downto 0);
 signal DESIRED_TEMP_REG     : std_logic_vector (6 downto 0);
 signal DISPLAY_SELECT_REG   : std_logic;
 signal COOL_REG             : std_logic;
+signal AC_READY_REG         : std_logic;
 signal HEAT_REG             : std_logic;
+signal FURNACE_HOT_REG      : std_logic;
 signal TEMP_DISPLAY_INT     : std_logic_vector (6 downto 0);
 signal AC_ON_INT            : std_logic;
 signal FURNACE_ON_INT       : std_logic;
+signal FAN_ON_INT           : std_logic;
 
 begin
     DISPLAY: process (CURRENT_TEMP_REG, DESIRED_TEMP_REG, DISPLAY_SELECT_REG)
