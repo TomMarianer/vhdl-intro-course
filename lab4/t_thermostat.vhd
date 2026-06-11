@@ -61,6 +61,7 @@ begin
 
     process
     begin
+        -- Test cooling side of state machine
         T_CURRENT_TEMP      <= "1110000";
         T_DESIRED_TEMP      <= "0001111";
         T_DISPLAY_SELECT    <= '0';
@@ -69,22 +70,46 @@ begin
         wait for 50 ns;
         T_COOL              <= '1';
         wait for 50 ns;
+        T_AC_READY          <= '1';
+        wait for 50 ns;
+        T_CURRENT_TEMP      <= "0001110";
+        wait for 50 ns;
+        T_AC_READY          <= '0';
+        wait for 50 ns;
+        T_CURRENT_TEMP      <= "1110000";
         T_COOL              <= '0';
+        wait for 50 ns;
+        T_COOL              <= '1';
+        wait for 50 ns;
+        T_AC_READY          <= '1';
+        wait for 50 ns;
+        T_COOL              <= '0';
+        wait for 50 ns;
+        T_AC_READY          <= '0';
+        wait for 50 ns;
+
+        -- Test heating side of state machine
         T_HEAT              <= '1';
         wait for 50 ns;
         T_CURRENT_TEMP      <= "0101010";
         T_DESIRED_TEMP      <= "1010101";
-        T_DISPLAY_SELECT    <= '1';
         wait for 50 ns;
-        T_DISPLAY_SELECT    <= '0';
-        T_COOL              <= '1';
+        T_FURNACE_ON        <= '1';
+        wait for 50 ns;
+        T_CURRENT_TEMP      <= "1010111";
+        wait for 50 ns;
+        T_FURNACE_ON        <= '0';
+        wait for 50 ns;
+        T_CURRENT_TEMP      <= "0101010";
         T_HEAT              <= '0';
         wait for 50 ns;
-        T_CURRENT_TEMP      <= "0000000";
-        T_DESIRED_TEMP      <= "0000000";
-        T_DISPLAY_SELECT    <= '0';
-        T_COOL              <= '0';
+        T_HEAT              <= '1';
+        wait for 50 ns;
+        T_FURNACE_ON        <= '1';
+        wait for 50 ns;
         T_HEAT              <= '0';
+        wait for 50 ns;
+        T_FURNACE_ON        <= '1';
         wait;
     end process;
     
