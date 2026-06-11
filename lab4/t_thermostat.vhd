@@ -66,7 +66,12 @@ begin
         T_DESIRED_TEMP      <= "0001111";
         T_DISPLAY_SELECT    <= '0';
         T_COOL              <= '0';
+        T_AC_READY          <= '0';
         T_HEAT              <= '0';
+        T_FURNACE_HOT       <= '0';
+        T_AC_ON             <= '0';
+        T_FURNACE_ON        <= '0';
+        T_FAN_ON            <= '0';
         wait for 50 ns;
         T_COOL              <= '1';
         wait for 50 ns;
