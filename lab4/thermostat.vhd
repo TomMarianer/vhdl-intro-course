@@ -132,6 +132,9 @@ begin
                     NEXT_STATE <= IDLE;
                 end if;
 
+            when others =>
+                NEXT_STATE <= IDLE;
+
         end case;
 
     end process;
