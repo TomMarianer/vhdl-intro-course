@@ -145,9 +145,9 @@ begin
 
     end process;
 
-    STATE_MACHINE_OUTPUTS: process (CURRENT_STATE)
+    STATE_MACHINE_OUTPUTS: process (NEXT_STATE)
     begin
-        case CURRENT_STATE is
+        case NEXT_STATE is
             when IDLE =>
                 FURNACE_ON_INT <= '0';
                 AC_ON_INT <= '0';
