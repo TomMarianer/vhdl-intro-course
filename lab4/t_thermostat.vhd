@@ -96,22 +96,22 @@ begin
         T_CURRENT_TEMP      <= "0101010";
         T_DESIRED_TEMP      <= "1010101";
         wait for 50 ns;
-        T_FURNACE_ON        <= '1';
+        T_FURNACE_HOT        <= '1';
         wait for 50 ns;
         T_CURRENT_TEMP      <= "1010111";
         wait for 50 ns;
-        T_FURNACE_ON        <= '0';
+        T_FURNACE_HOT        <= '0';
         wait for 50 ns;
         T_CURRENT_TEMP      <= "0101010";
         T_HEAT              <= '0';
         wait for 50 ns;
         T_HEAT              <= '1';
         wait for 50 ns;
-        T_FURNACE_ON        <= '1';
+        T_FURNACE_HOT        <= '1';
         wait for 50 ns;
         T_HEAT              <= '0';
         wait for 50 ns;
-        T_FURNACE_ON        <= '1';
+        T_FURNACE_HOT        <= '1';
         wait;
     end process;
     
