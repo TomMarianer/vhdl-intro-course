@@ -24,8 +24,8 @@ component THERMOSTAT is
     
 end component THERMOSTAT;
 
-signal T_CLK            : std_logic := '0';
-signal T_RESET          : std_logic := '0';
+signal T_CLK            : std_logic := '1';
+signal T_RESET          : std_logic := '1';
 signal T_CURRENT_TEMP   : std_logic_vector (6 downto 0);
 signal T_DESIRED_TEMP   : std_logic_vector (6 downto 0);
 signal T_DISPLAY_SELECT : std_logic;
