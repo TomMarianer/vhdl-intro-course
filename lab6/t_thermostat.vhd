@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 entity T_THERMOSTAT is
 end entity T_THERMOSTAT;
@@ -68,57 +69,82 @@ begin
         );
 
     process
+
+    variable PREVIOUS_TIME  : time := 0 ns;
+    variable TIME_DIFF      : time := 0 ns;
+
     begin
         -- Test cooling side of state machine
-        T_CURRENT_TEMP      <= "1110000";
-        T_DESIRED_TEMP      <= "0001111";
+        T_CURRENT_TEMP      <= std_logic_vector(to_signed(30, T_CURRENT_TEMP'length));
+        T_DESIRED_TEMP      <= std_logic_vector(to_signed(25, T_DESIRED_TEMP'length));
         T_DISPLAY_SELECT    <= '0';
+        PREVIOUS_TIME := NOW;
+
+        wait until T_TEMP_DISPLAY'event and T_TEMP_DISPLAY /= (T_TEMP_DISPLAY'range => '0');
+        assert FALSE report "T_TEMP_DISPLAY set to " & integer'image(to_integer(signed(T_TEMP_DISPLAY))) & "C at time " & integer'image(NOW / 1 ns) & "ns" severity note;
+        PREVIOUS_TIME := NOW;
+
+        T_DISPLAY_SELECT    <= '1';
+        wait until T_TEMP_DISPLAY'event and T_TEMP_DISPLAY /= (T_TEMP_DISPLAY'range => '0');
+        assert FALSE report "T_TEMP_DISPLAY set to " & integer'image(to_integer(signed(T_TEMP_DISPLAY))) & "C at time " & integer'image(NOW / 1 ns) & "ns" severity note;
+        PREVIOUS_TIME := NOW;
+
         T_COOL              <= '0';
         T_AC_READY          <= '0';
         T_HEAT              <= '0';
         T_FURNACE_HOT       <= '0';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
+        
+        PREVIOUS_TIME := NOW;
         T_COOL              <= '1';
-        wait for 50 ns;
+        --wait until T_AC_ON'event or T_FURNACE_HOT'event or T_FAN_ON'event;
+        --TIME_DIFF := NOW - PREVIOUS_TIME;
+        --assert TIME_DIFF = PROPAGATION_DELAY report "Wrong propagation delay " & integer'image(TIME_DIFF / 1 ns) & "ns, should be " & integer'image(PROPAGATION_DELAY / 1 ns) & "ns"    severity error;
+        wait for PROPAGATION_WAIT;
+        assert T_AC_ON = '1'                 report "Wrong output T_AC_ON " & std_logic'image(T_AC_ON) & " should be '1', at time " & integer'image(NOW / 1 ns) & "ns"  severity error;
+        assert T_FURNACE_ON = '0'            report "Wrong output T_FURNACE_ON " & std_logic'image(T_FURNACE_ON) & " should be '0'" & integer'image(NOW / 1 ns) & "ns"  severity error;
+        assert T_FAN_ON = '0'                report "Wrong output T_FAN_ON " & std_logic'image(T_FAN_ON) & " should be '0'" & integer'image(NOW / 1 ns) & "ns"          severity error;
+
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_AC_READY          <= '1';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_CURRENT_TEMP      <= "0001110";
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_AC_READY          <= '0';
         wait for 200 ns;
         T_CURRENT_TEMP      <= "1110000";
         T_COOL              <= '0';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_COOL              <= '1';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_AC_READY          <= '1';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_COOL              <= '0';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_AC_READY          <= '0';
         wait for 200 ns;
 
         -- Test heating side of state machine
         T_HEAT              <= '1';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_CURRENT_TEMP      <= "0101010";
         T_DESIRED_TEMP      <= "1010101";
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_FURNACE_HOT        <= '1';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_CURRENT_TEMP      <= "1010111";
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_FURNACE_HOT        <= '0';
         wait for 100 ns;
         T_CURRENT_TEMP      <= "0101010";
         T_HEAT              <= '0';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_HEAT              <= '1';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_FURNACE_HOT        <= '1';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_HEAT              <= '0';
-        wait for 50 ns;
+        wait for WAIT_BETWEEN_ACTIONS_BASE;
         T_FURNACE_HOT        <= '0';
         wait;
     end process;
