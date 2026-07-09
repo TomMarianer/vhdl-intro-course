@@ -1,2 +1,18 @@
 
-lab1/.DS_Store
+*/.DS_Store
+
+.DS_Store
+
+*.o
+
+*.cf
+
+*.ghw
+
+lab3/t_thermostat
+
+lab4/t_thermostat
+
+lab5/t_thermostat
+
+lab6/t_thermostat
