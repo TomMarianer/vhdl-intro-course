@@ -38,9 +38,17 @@ signal T_AC_ON          : std_logic;
 signal T_FURNACE_ON     : std_logic;
 signal T_FAN_ON         : std_logic;
 
+constant PERIOD                     : time := 10 ns;
+constant RESET_TIME                 : time := 10 ns;
+constant WAIT_BETWEEN_ACTIONS_BASE  : time := 50 ns;
+constant PROPAGATION_DELAY          : time := 2 * PERIOD;
+constant PROPAGATION_BUFFER         : time := 0.1 ns;
+constant PROPAGATION_WAIT           : time := PROPAGATION_DELAY + PROPAGATION_BUFFER;
+
+
 begin
-    T_CLK   <= not T_CLK after 5 ns;
-    T_RESET <= '1', '0' after 10 ns;
+    T_CLK   <= not T_CLK after PERIOD/2;
+    T_RESET <= '1', '0' after RESET_TIME;
 
     UUT: THERMOSTAT
         port map (
